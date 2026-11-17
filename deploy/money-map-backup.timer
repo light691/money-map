@@ -1,0 +1,7 @@
+[Unit]
+Description=Money Map nightly database backup
+[Timer]
+OnCalendar=*-*-* 03:15
+Persistent=true
+[Install]
+WantedBy=timers.target

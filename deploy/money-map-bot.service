@@ -1,0 +1,12 @@
+[Unit]
+Description=Money Map public Telegram bot (invite-only, DeepSeek)
+After=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/money-map
+EnvironmentFile=%h/.config/money-map/bot.env
+ExecStart=/usr/bin/python3 %h/Projects/money-map/tools/bot.py run
+Restart=on-failure
+RestartSec=10
+[Install]
+WantedBy=default.target

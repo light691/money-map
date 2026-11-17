@@ -1,0 +1,12 @@
+[Unit]
+Description=Money Map public web view (bot users only, one-time login links)
+After=network.target
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/money-map
+EnvironmentFile=%h/.config/money-map/bot.env
+ExecStart=/usr/bin/python3 %h/Projects/money-map/tools/server.py 8100 127.0.0.1 --public
+Restart=on-failure
+RestartSec=2
+[Install]
+WantedBy=default.target

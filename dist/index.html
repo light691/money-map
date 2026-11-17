@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#ffffff"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Money Map">
+  <title>Money Map · Personal finance forecast</title>
+  <link rel="icon" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./design.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="#overview" aria-label="Money Map home"><span class="brand-mark">M</span><span>Money Map</span></a>
+<nav class="app-nav" aria-label="Main navigation"><a href="#overview" data-tab="overview"><img class="ui-icon" src="./assets/calendar-blank.svg" alt=""><span>Periods</span></a><a href="#budget" data-tab="budget"><img class="ui-icon" src="./assets/chart-bar.svg" alt=""><span>Cash plan</span></a><a href="#forecast" data-tab="forecast"><img class="ui-icon" src="./assets/chart-line-up.svg" alt=""><span>Forecast</span></a><a href="#cards" data-tab="cards"><img class="ui-icon" src="./assets/credit-card.svg" alt=""><span>Cards</span></a><a href="#plan" data-tab="plan"><img class="ui-icon" src="./assets/list-bullets.svg" alt=""><span>Plan</span></a></nav>
+      <button class="header-add icon-button" data-preset="bill" type="button" aria-label="Add expense"><img class="ui-icon" src="./assets/plus.svg" alt=""></button><span class="privacy-note" id="storage-label">Saved in this browser</span>
+    </header>
+
+    <main>
+      <div class="app-view" data-view="budget" id="budget" hidden>
+        <section class="intro budget-intro"><div><p class="eyebrow">PLAN YOUR CASH</p><h1>Cash plan</h1><p class="lede">Income in. Bills out. See what’s left.</p></div><span class="draft-badge">Draft</span></section>
+        <section class="budget-period-picker" aria-label="Choose your cash plan period"><div class="budget-month-nav"><button id="budget-prev-month" class="icon-button" type="button" aria-label="Previous cash plan month"><img class="ui-icon" src="./assets/caret-left.svg" alt=""></button><h2 id="budget-month-title"></h2><button id="budget-next-month" class="icon-button" type="button" aria-label="Next cash plan month"><img class="ui-icon" src="./assets/caret-right.svg" alt=""></button></div><div class="budget-period-buttons" aria-label="Cash plan period"><button class="button" type="button" data-budget-period="first" aria-pressed="false"><strong>1st period</strong><span>10th–24th</span></button><button class="button" type="button" data-budget-period="second" aria-pressed="false"><strong>2nd period</strong><span>25th–next 9th</span></button><button class="button" type="button" data-budget-period="month" aria-pressed="false"><strong>Whole month</strong><span>All dates</span></button></div></section>
+        <section class="budget-result" aria-label="Cash plan result"><p id="budget-result-label">Cash left after bills</p><strong id="budget-remaining">—</strong><span id="budget-result-note">For your selected period</span><div class="budget-equation"><div><span>Available</span><b id="budget-available">—</b><button class="text-link" id="budget-edit-income" type="button"><img class="ui-icon" src="./assets/pencil-simple.svg" alt=""> Edit income</button></div><div><span>Planned out</span><b id="budget-out">—</b><div class="budget-type-summary"><div class="recurring-tone"><span>Recurring</span><strong id="budget-recurring-total">—</strong><small>Scheduled every month</small></div><div class="once-tone"><span>One-time</span><strong id="budget-once-total">—</strong><small>Scheduled for one date</small></div></div></div></div></section>
+        <details id="budget-income-editor" class="income-editor"><summary>Income & carry-over</summary><section class="budget-panel" aria-labelledby="budget-income-title"><div class="section-heading"><h2 id="budget-income-title">Edit income & carry-over</h2><button id="budget-income-reset" class="text-link" type="button">Use scheduled pay</button></div><div class="budget-fields"><label>Take-home income (₱)<input id="budget-income" type="number" min="0" step="0.01" inputmode="decimal" required></label><label>Cash carried into this period (₱)<input id="budget-carry" type="number" min="0" step="0.01" inputmode="decimal" required></label></div><p class="small-note" id="budget-income-note"></p><button id="budget-update-pay" class="button button-secondary" type="button">Save income to this period’s forecast</button><p class="small-note">Save your actual or expected payday amount for this period. Future periods keep their default pay.</p></section></details>
+        <section class="budget-panel" aria-labelledby="budget-bills-title"><h2 id="budget-bills-title" class="sr-only">Your bills</h2><div id="budget-bills" class="budget-bills"></div><div class="budget-subtotal"><span>All included bills</span><strong id="budget-bills-total">—</strong></div><p class="small-note">Only bills due within your selected dates are counted. Before the 10th belongs to the previous month’s 2nd period. Paid bills show zero; uncheck a bill to exclude it from this draft. Edit schedule changes your main plan.</p></section>
+        <section class="budget-panel" aria-labelledby="budget-extras-title"><div class="section-heading"><div><h2 id="budget-extras-title">One-time extras</h2><p>Extra expenses for this draft only. These won’t repeat next month.</p></div><button id="budget-add-extra" class="button button-primary" type="button">Add expense</button></div><div id="budget-extras"></div><div class="budget-subtotal"><span>One-time extras</span><strong id="budget-extras-total">—</strong></div></section>
+        <div class="budget-add-actions"><button class="button" data-preset="income" type="button"><img class="ui-icon" src="./assets/plus.svg" alt=""> Add income</button><button id="budget-add-recurring" class="button button-primary" type="button"><img class="ui-icon" src="./assets/plus.svg" alt=""> Add recurring bill</button></div><details class="custom-dates"><summary>Custom dates</summary><p id="budget-period-selection" class="budget-selected-period"></p><div class="budget-fields"><label>From<input id="budget-start" type="date" required></label><label>Through<input id="budget-end" type="date" required></label></div><p class="small-note" id="budget-period-note">Both dates are included. Each period has its own draft.</p></details><div class="budget-footer"><p class="small-note" id="budget-save-note">Temporary drafts are saved in this browser and included in backups. Draft income, bill amounts, and extra expenses do not change your forecast or record payments.</p><button id="budget-reset" class="button button-secondary" type="button">Reset this draft</button></div>
+        <button type="button" id="budget-bottom" class="budget-bottom" aria-label="Show cash plan summary"><span id="budget-bottom-label">Cash left</span><strong id="budget-bottom-amount">—</strong><img class="ui-icon" src="./assets/arrow-up.svg" alt=""></button>
+      </div>
+      <div class="app-view" data-view="overview" id="overview">
+      <section class="intro"><div><p class="eyebrow">MONEY MAP</p><h1>Your periods</h1><p class="lede" id="overview-date">Your current plan</p></div><button class="add-round" id="add-flow-top" type="button" aria-label="Add income or bill"><img class="ui-icon" src="./assets/plus.svg" alt=""></button></section>
+      <section class="scope-picker" aria-label="Choose a period or month"><div class="scope-month-nav"><button id="scope-prev" class="icon-button" type="button" aria-label="Previous month"><img class="ui-icon" src="./assets/caret-left.svg" alt=""></button><label>Review month<input id="scope-month" type="month"></label><button id="scope-next" class="icon-button" type="button" aria-label="Next month"><img class="ui-icon" src="./assets/caret-right.svg" alt=""></button></div><div class="budget-period-buttons scope-buttons"><button type="button" class="button" data-scope="first" aria-pressed="true"><strong>1st period</strong><span>10th–24th</span></button><button type="button" class="button" data-scope="second" aria-pressed="false"><strong>2nd period</strong><span>25th–next 9th</span></button><button type="button" class="button" data-scope="month" aria-pressed="false"><strong>Monthly</strong><span>Calendar month</span></button></div></section>
+      <section class="scope-result" aria-labelledby="scope-title"><p class="eyebrow" id="scope-title">1st period</p><p id="scope-dates"></p><p class="scope-left-label">Projected cash left after expenses</p><strong id="scope-left">—</strong><div class="scope-equation"><div><span id="scope-opening-label">Cash brought forward</span><strong id="scope-opening">—</strong></div><div><span>+ Income</span><strong id="scope-income">—</strong></div><div class="scope-available"><span>= Available cash</span><strong id="scope-available">—</strong></div><div><span>− All pending expenses</span><strong id="scope-expenses">—</strong></div></div><button id="scope-update-pay" class="button scope-update-pay" type="button">Update income for this period</button><p id="scope-context" class="scope-context"></p></section>
+      <section class="overview-month"><div class="section-heading"><h2 id="overview-month-title">This month at a glance</h2><button id="scope-show-month" class="text-link" type="button">See expenses</button></div><div id="overview-month-summary" class="month-preview"></div><p class="small-note" id="overview-month-context"></p></section>
+      <section class="summary-grid" aria-label="Summary">
+        <article class="metric"><p>Spendable cash now</p><strong id="metric-cash">—</strong><span id="metric-cash-context">From your starting point</span></article>
+        <article class="metric"><p>Lowest projected cash</p><strong id="metric-low">—</strong><span id="metric-low-context">—</span></article>
+        <article class="metric"><p>Debt snapshots</p><strong id="metric-debt">—</strong><span>Balances are snapshots you can edit</span></article>
+      </section>
+
+      <details id="starting-point" class="starting-card"><summary>Update cash &amp; date <span>Adjust your starting point</span></summary><div class="starting-content">
+        <div>
+          <h2 id="starting-title">Cash snapshot</h2>
+          <p>Enter your cash after all activity on this date. The forecast starts the following day.</p>
+        </div>
+        <form id="starting-form" class="starting-form">
+          <label>As of date<input id="as-of-date" name="asOf" type="date" required></label>
+          <label>Spendable cash <span class="hint">₱</span><input id="starting-cash" name="startingCash" type="number" step="0.01" min="0" required></label>
+          <button class="button button-secondary" type="submit">Update forecast</button>
+        </form>
+      </div></details>
+
+      <div class="quick-actions" aria-label="Quick add"><button class="button" data-preset="income"><span class="quick-symbol"><img class="ui-icon" src="./assets/plus.svg" alt=""></span>Income</button><button class="button" data-preset="bill"><span class="quick-symbol"><img class="ui-icon" src="./assets/minus.svg" alt=""></span>Expense</button><button class="button" data-preset="card"><span class="quick-symbol"><img class="ui-icon" src="./assets/credit-card.svg" alt=""></span>Card payment</button></div>
+      <section class="overview-next"><div class="section-heading"><h2 id="scope-activity-title">Period activity</h2><button id="scope-plan" class="text-link" type="button">Plan this period</button></div><div class="scope-expense-breakdown" id="scope-breakdown"></div><div class="segmented-control" id="upcoming-filters" aria-label="Selected range activity filter"><button type="button" data-upcoming="all" aria-pressed="true">All</button><button type="button" data-upcoming="expense" aria-pressed="false">Expenses</button><button type="button" data-upcoming="income" aria-pressed="false">Income</button></div><div id="overview-upcoming" class="overview-list"></div><p class="small-note">All listed activity within the selected dates is shown. Pay records a payment you made outside Money Map.</p><div id="overview-recent" class="recent-payment" hidden></div></section>
+      <p class="small-note">Estimates follow your plan. Update card payments from each new SOA.</p></div>
+      <div class="app-view" data-view="forecast" id="forecast-view" hidden>
+      <section id="forecast" class="section-block" aria-labelledby="forecast-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">LOOK AHEAD</p><h2 id="forecast-title">Forecast</h2></div>
+          <div class="forecast-controls">
+            <label>Pay scenario<select id="scenario"><option value="average">Average pay</option><option value="conservative">Lowest observed pay</option></select></label>
+            <label>Horizon<select id="horizon"><option value="3" selected>3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></label>
+          </div>
+        </div>
+        <div class="notice" id="forecast-notice" role="status"></div>
+        <figure class="chart-wrap">
+          <div class="chart-heading"><strong>Projected cash</strong><span id="chart-range"></span></div>
+          <svg id="cash-chart" role="img" aria-label="Projected cash balance chart"></svg>
+          <figcaption>Only listed cash flows are included. Unallocated cash is a forecast, not a spending recommendation.</figcaption>
+        </figure>
+        <div class="segmented-control" id="forecast-grouping" aria-label="Forecast grouping"><button type="button" data-forecast-group="period" aria-pressed="true">Payday periods</button><button type="button" data-forecast-group="month" aria-pressed="false">Monthly overview</button></div><div class="table-scroll"><table class="data-table monthly-table"><thead><tr><th id="forecast-range-label">Period</th><th>Income</th><th>Bills &amp; other</th><th>Card payments</th><th>Lowest cash</th><th>End cash</th></tr></thead><tbody id="monthly-body"></tbody></table></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="upcoming-title">
+        <div class="section-heading"><div><p class="eyebrow">NEXT UP</p><h2 id="upcoming-title">Payment calendar</h2><p>Select an item to change just that occurrence, or edit its entire schedule. Same-day income is assumed available before bills.</p></div></div>
+        <div class="calendar-controls"><label>Show<select id="activity-filter"><option value="all">All activity</option><option value="card">Card payments</option><option value="income">Income</option><option value="expense">Money out</option></select></label><label>Period<select id="activity-period"><option value="all">All payday periods</option></select></label><label>Month<select id="activity-month"><option value="all">All forecast months</option></select></label></div><div class="table-scroll"><table class="data-table activity-table"><thead><tr><th>Date</th><th>Item</th><th>Type</th><th>Cash change</th><th>Balance after</th></tr></thead><tbody id="upcoming-body"></tbody></table></div>
+      </section>
+
+      </div><div class="app-view" data-view="cards" id="cards-view" hidden>
+      <section id="cards" class="section-block card-section" aria-labelledby="cards-title"><div class="section-heading"><div><p class="eyebrow">INCLUDED IN YOUR FORECAST</p><h2 id="cards-title">Card payments</h2><p>Planned payments are included in your cash forecast. Tap one to edit.</p></div><button class="button button-primary" data-preset="card">+ Card payment</button></div><div id="card-summary" class="card-summary"></div><div id="card-list" class="flow-list"></div><p class="small-note">Card balances are statement snapshots. This view does not calculate interest, fees, or a debt payoff date. Required payments may be higher than the plan.</p></section>
+      </div><div class="app-view" data-view="plan" id="plan" hidden>
+      <div class="view-title"><p class="eyebrow">MAKE IT YOURS</p><h1>Your plan</h1></div>
+      <section id="cashflows" class="section-block" aria-labelledby="flows-title">
+        <div class="section-heading"><div><p class="eyebrow">EDIT THE INPUTS</p><h2 id="flows-title">Edit your plan</h2><p>Tap to edit. Pause or duplicate entries to try a different plan.</p></div><button class="button button-secondary" id="add-flow" type="button">+ Add income or bill</button></div>
+        <label class="search-label">Find an entry<input id="flow-search" type="search" placeholder="Search names or categories…"></label><div class="flow-groups">
+          <div class="flow-group"><h3>Income</h3><div id="income-list" class="flow-list"></div></div>
+          <div class="flow-group"><h3>Recurring expenses</h3><div id="recurring-list" class="flow-list"></div></div>
+          <div class="flow-group"><h3>One-time payments</h3><div id="one-time-list" class="flow-list"></div></div>
+        </div>
+      </section>
+
+      <section id="balances" class="section-block" aria-labelledby="balances-title">
+        <div class="section-heading"><div><p class="eyebrow">TRACKED SNAPSHOTS</p><h2 id="balances-title">Balances</h2><p>Update these from statements. A debt here affects the summary; add its payment under cash flows to affect the forecast.</p></div><button class="button button-secondary" id="add-balance" type="button">+ Add balance</button></div>
+        <div id="balance-list" class="balance-list"></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="payments-title"><div class="section-heading"><div><h2 id="payments-title">Payment history</h2><p>Payments you recorded here. Your bank handles the actual transfer.</p></div></div><div id="payment-history" class="payment-history"></div></section>
+      <section class="backup-bar" aria-labelledby="backup-title">
+        <div><h2 id="backup-title">Keep a copy of your plan</h2><p id="backup-description">Edits are saved in this browser. Export a backup to move them to another device.</p></div>
+        <div class="backup-actions"><button class="button button-secondary" id="export-data" type="button">Export backup</button><button class="button button-secondary" id="import-data" type="button">Import backup</button><input id="import-file" type="file" accept="application/json,.json" hidden></div>
+      </section>
+      </div>
+    </main>
+
+    <footer>Private to you · Saved in this browser</footer>
+  </div>
+
+  <dialog id="period-income-dialog" aria-labelledby="period-income-title"><form id="period-income-form"><div class="dialog-head"><div><p class="eyebrow">PAYDAY INCOME</p><h2 id="period-income-title">Update this period’s income</h2></div><button id="close-period-income" class="icon-button" type="button" aria-label="Close"><img class="ui-icon" src="./assets/x.svg" alt=""></button></div><p id="period-income-description" class="small-note"></p><div id="period-income-entries"></div><p class="small-note">This saves the net income for these specific paydays. Your recurring default and future periods stay the same. Update your cash snapshot separately when the pay has already arrived.</p><div class="dialog-actions"><button id="reset-period-income" class="button button-secondary" type="button">Fill default amounts</button><button class="button button-primary" type="submit">Save period income</button></div></form></dialog>
+  <dialog id="flow-dialog" aria-labelledby="flow-dialog-title">
+    <form id="flow-form">
+      <div class="dialog-head"><div><p class="eyebrow">CASH FLOW</p><h2 id="flow-dialog-title">Add cash flow</h2></div><button class="icon-button" id="close-flow" type="button" aria-label="Close"><img class="ui-icon" src="./assets/x.svg" alt=""></button></div>
+      <input id="flow-id" type="hidden">
+      <div class="form-grid">
+        <label class="wide">Name<input id="flow-name" type="text" maxlength="80" required></label>
+        <label>Direction<select id="flow-direction"><option value="expense">Money out</option><option value="income">Money in</option></select></label>
+        <label>Schedule<select id="flow-schedule"><option value="monthly">Every month</option><option value="once">One time</option></select></label>
+        <label>Amount (₱)<input id="flow-amount" type="number" min="0" step="0.01" required></label>
+        <label id="low-amount-wrap">Low-pay amount (₱)<input id="flow-low-amount" type="number" min="0" step="0.01"></label>
+        <label id="once-date-wrap">Date<input id="flow-date" type="date"></label>
+        <label id="monthly-day-wrap">Day of month<input id="flow-day" type="number" min="1" max="31"></label>
+        <label id="monthly-start-wrap">Starts<input id="flow-start" type="date"></label>
+        <label id="monthly-end-wrap">Ends <span class="hint">optional</span><input id="flow-end" type="date"></label>
+        <label>Payment type<select id="flow-kind"><option value="regular">Regular income or expense</option><option value="card">Credit card payment</option></select></label><label>Status<select id="flow-status"><option value="active">Active in forecast</option><option value="paused">Paused — excluded</option></select></label><label>Category<input id="flow-category" type="text" maxlength="40" placeholder="Household, card, pay…"></label>
+        <label>Confidence<select id="flow-confidence"><option value="confirmed">Confirmed</option><option value="estimate">Estimate</option></select></label>
+        <label class="wide">Note <span class="hint">optional</span><textarea id="flow-note" rows="2" maxlength="240"></textarea></label>
+      </div>
+      <div class="dialog-actions"><button class="button button-secondary" id="duplicate-flow" type="button">Duplicate</button><button class="button button-danger" id="delete-flow" type="button">Delete</button><span class="spacer"></span><button class="button button-secondary" id="cancel-flow" type="button">Cancel</button><button class="button button-primary" type="submit">Save cash flow</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="balance-dialog" aria-labelledby="balance-dialog-title">
+    <form id="balance-form">
+      <div class="dialog-head"><div><p class="eyebrow">BALANCE</p><h2 id="balance-dialog-title">Add balance</h2></div><button class="icon-button" id="close-balance" type="button" aria-label="Close"><img class="ui-icon" src="./assets/x.svg" alt=""></button></div>
+      <input id="balance-id" type="hidden">
+      <div class="form-grid"><label class="wide">Name<input id="balance-name" type="text" maxlength="80" required></label><label>Type<select id="balance-kind"><option value="debt">Debt</option><option value="asset">Asset</option></select></label><label>Balance (₱)<input id="balance-amount" type="number" min="0" step="0.01" required></label><label>As of<input id="balance-date" type="date" required></label><label class="wide">Note <span class="hint">optional</span><textarea id="balance-note" rows="3" maxlength="240"></textarea></label></div>
+      <div class="dialog-actions"><button class="button button-danger" id="delete-balance" type="button">Delete</button><span class="spacer"></span><button class="button button-secondary" id="cancel-balance" type="button">Cancel</button><button class="button button-primary" type="submit">Save balance</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="occurrence-dialog" aria-labelledby="occurrence-title"><form id="occurrence-form"><div class="dialog-head"><div><p class="eyebrow">ONE SCHEDULED ENTRY</p><h2 id="occurrence-title">Adjust this occurrence</h2></div><button type="button" class="icon-button" id="close-occurrence" aria-label="Close"><img class="ui-icon" src="./assets/x.svg" alt=""></button></div><p id="occurrence-description" class="small-note"></p><div class="form-grid"><label>Date<input id="occurrence-date" type="date" required></label><label>Amount (₱)<input id="occurrence-amount" type="number" min="0" step="0.01" required></label><label class="wide">Include in forecast<select id="occurrence-status"><option value="active">Include this occurrence</option><option value="skip">Skip this occurrence</option></select></label></div><p class="small-note">Use Record payment after paying. Editing the schedule only changes your forecast.</p><div class="dialog-actions"><button type="button" class="button button-primary" id="record-payment">Record payment</button><button type="button" class="button" id="occurrence-series">Edit full schedule</button><button type="button" class="button" id="occurrence-reset">Reset</button><button class="button button-primary" type="submit">Save change</button></div></form></dialog>
+  <dialog id="payment-dialog" aria-labelledby="payment-title"><form id="payment-form"><div class="dialog-head"><h2 id="payment-title">Record payment</h2><button class="icon-button" id="close-payment" type="button" aria-label="Close"><img class="ui-icon" src="./assets/x.svg" alt=""></button></div><p id="payment-description" class="small-note"></p><p class="small-note">After paying outside Money Map, record the amount here.</p><div class="form-grid"><label>Amount paid (₱)<input id="payment-amount" type="number" min="0.01" step="0.01" required></label><label>Date paid<input id="payment-date" type="date" required></label><label class="wide">Your cash<select id="payment-cash"><option value="deduct">Deduct payment from current cash</option><option value="included">Cash already includes this payment</option></select></label><details class="wide payment-options"><summary>Debt balance options</summary><div class="form-grid"><label class="wide">Reduce a debt balance <span class="hint">optional</span><select id="payment-debt"><option value="">Keep debt snapshots unchanged</option></select></label><label id="payment-principal-wrap" class="wide">Amount to reduce the debt by (₱)<input id="payment-principal" type="number" min="0" step="0.01"><span class="hint">For a card, use the principal reduction from your statement.</span></label></div></details></div><div id="payment-preview" class="payment-preview" role="status"></div><p class="small-note">The paid amount is removed from this scheduled entry. Any unpaid remainder stays in your forecast. Later months keep their schedule.</p><div class="dialog-actions"><button class="button button-secondary" id="cancel-payment" type="button">Cancel</button><button class="button button-primary" type="submit">Record payment</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

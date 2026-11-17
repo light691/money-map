@@ -1,0 +1,6 @@
+[Unit]
+Description=Money Map nightly database backup
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Projects/money-map
+ExecStart=/usr/bin/python3 %h/Projects/money-map/tools/moneymap.py backup --keep 30
